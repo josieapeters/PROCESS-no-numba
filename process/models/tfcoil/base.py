@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from enum import IntEnum
 from types import DynamicClassAttribute
 
-import numba
 import numpy as np
 
 from process.core import constants
@@ -2051,7 +2050,6 @@ class TFCoil(Model):
         return th_cond
 
     @staticmethod
-    @numba.njit(cache=True)
     def tf_coil_self_inductance(
         dr_tf_inboard: float,
         r_tf_arc: np.ndarray,
@@ -2207,7 +2205,6 @@ class TFCoil(Model):
         )
 
     @staticmethod
-    @numba.njit(cache=True)
     def stresscl(
         n_tf_layer,
         n_radial_array,
@@ -3641,7 +3638,6 @@ class TFCoil(Model):
             )
 
 
-@numba.njit(cache=True)
 def eyoung_parallel(
     eyoung_j_1, a_1, poisson_j_perp_1, eyoung_j_2, a_2, poisson_j_perp_2
 ):
@@ -3700,7 +3696,6 @@ def eyoung_parallel(
     return eyoung_j_3, a_3, poisson_j_perp_3
 
 
-@numba.njit(cache=True)
 def sigvm(sx: float, sy: float, sz: float, txy: float, txz: float, tyz: float) -> float:
     """Calculates Von Mises stress in a TF coil
 
@@ -3738,7 +3733,6 @@ def sigvm(sx: float, sy: float, sz: float, txy: float, txz: float, tyz: float) -
     )
 
 
-@numba.njit(cache=True, error_model="numpy")
 def extended_plane_strain(
     nu_t,
     nu_zt,
@@ -4255,7 +4249,6 @@ def extended_plane_strain(
     return rradius, sigr, sigt, sigz, str_r, str_t, str_z, r_deflect
 
 
-@numba.njit(cache=True)
 def plane_stress(nu, rad, ey, j, nlayers, n_radial_array):
     """Calculates the stresses in a superconductor TF coil
     inboard leg at the midplane using the plain stress approximation
@@ -4418,23 +4411,23 @@ def plane_stress(nu, rad, ey, j, nlayers, n_radial_array):
     # instead.
     # https://github.com/ukaea/PROCESS/issues/3027
     # https://github.com/scipy/scipy/issues/23639
-    with numba.objmode(cc="float64[:]"):
-        # These matrices can often end up being very ill-conditioned which can lead
-        # to numerical instability when solving below.
-        # Scaling the matrix can help reduce numerical instability by reducing the
-        # condition of matrix. Here, we scale aa such that the largest element on a
-        # given row is 1.0. This does not change the solution provided each element of
-        # a given row is scaled by the same scalar and the corresponding entry in bb is
-        # also scaled the same amount. NOTE: this does not entirely solve the numerical
-        # instability and you can get above-floating point differences in the result
-        # of this function depending on system.
-        row_scale = np.max(np.abs(aa), axis=1)
-        # The transpose below ensures the scale is repeated along the row, not the
-        # column
-        aa /= np.broadcast_to(row_scale, aa.shape).T
-        bb /= row_scale
 
-        cc = np.linalg.solve(aa, bb)
+    # These matrices can often end up being very ill-conditioned which can lead
+    # to numerical instability when solving below.
+    # Scaling the matrix can help reduce numerical instability by reducing the
+    # condition of matrix. Here, we scale aa such that the largest element on a
+    # given row is 1.0. This does not change the solution provided each element of
+    # a given row is scaled by the same scalar and the corresponding entry in bb is
+    # also scaled the same amount. NOTE: this does not entirely solve the numerical
+    # instability and you can get above-floating point differences in the result
+    # of this function depending on system.
+    row_scale = np.max(np.abs(aa), axis=1)
+    # The transpose below ensures the scale is repeated along the row, not the
+    # column
+    aa /= np.broadcast_to(row_scale, aa.shape).T
+    bb /= row_scale
+
+    cc = np.linalg.solve(aa, bb)
 
     #  Multiply c by (-1) (John Last, internal CCFE memorandum, 21/05/2013)
     for ii in range(nlayers):
@@ -4479,7 +4472,6 @@ def plane_stress(nu, rad, ey, j, nlayers, n_radial_array):
     return sigr, sigt, r_deflect, rradius
 
 
-@numba.njit(cache=True)
 def eyoung_parallel_array(n, eyoung_j_in, a_in, poisson_j_perp_in):
     """
     See Issue #1205 for derivation PDF
@@ -4543,7 +4535,6 @@ def eyoung_parallel_array(n, eyoung_j_in, a_in, poisson_j_perp_in):
     return eyoung_j_out, a_out, poisson_j_perp_out
 
 
-@numba.njit(cache=True)
 def eyoung_t_nested_squares(n, eyoung_j_in, l_in, poisson_j_perp_in):
     """
     Gives the smeared transverse elastic
@@ -4621,7 +4612,6 @@ def eyoung_t_nested_squares(n, eyoung_j_in, l_in, poisson_j_perp_in):
     return eyoung_j_out, l_out, poisson_j_perp_out, eyoung_stiffest
 
 
-@numba.njit(cache=True)
 def eyoung_series(eyoung_j_1, l_1, poisson_j_perp_1, eyoung_j_2, l_2, poisson_j_perp_2):
     """
     See Issue #1205 for derivation PDF

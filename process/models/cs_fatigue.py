@@ -1,5 +1,4 @@
 import numpy as np
-from numba import njit
 
 from process.core import constants
 from process.core.model import Model
@@ -109,7 +108,6 @@ class CsFatigue(Model):
         return n_pulse / 2.0e0, t_crack_radial
 
     @staticmethod
-    @njit(cache=True)
     def embedded_stress_intensity_factor(hoop_stress, t, w, a, c, phi):
         # ! Assumes an embedded elliptical efect geometry
         # ! geometric quantities
@@ -169,7 +167,6 @@ class CsFatigue(Model):
         )
 
     @staticmethod
-    @njit(cache=True)
     def surface_stress_intensity_factor(hoop_stress, t, w, a, c, phi):
         # ! Assumes an surface semi elliptical defect geometry
         # ! geometric quantities

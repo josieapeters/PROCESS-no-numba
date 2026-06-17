@@ -3,7 +3,6 @@ import math
 from dataclasses import dataclass
 from enum import IntEnum
 
-import numba
 import numpy as np
 from scipy import optimize
 from scipy.linalg import svd
@@ -4681,7 +4680,6 @@ def superconpf(
     return jcritwp, j_crit_cable, j_crit_sc, tmarg
 
 
-@numba.njit(cache=True)
 def calculate_b_field_at_point(
     r_current_loop: np.ndarray,
     z_current_loop: np.ndarray,
@@ -4815,7 +4813,6 @@ def calculate_b_field_at_point(
     )
 
 
-@numba.njit(cache=True)
 def rsid(npts, brin, bzin, nfix, n_pf_coil_groups, ccls, bfix, gmat):
     """Computes the norm of the residual vectors.
 
@@ -4885,7 +4882,6 @@ def rsid(npts, brin, bzin, nfix, n_pf_coil_groups, ccls, bfix, gmat):
     return brssq, brnrm, bzssq, bznrm, ssq
 
 
-@numba.njit(cache=True)
 def fixb(lrow1, npts, rpts, zpts, nfix, rfix, zfix, cfix):
     """Calculates the field from the fixed current loops.
 
@@ -4938,7 +4934,6 @@ def fixb(lrow1, npts, rpts, zpts, nfix, rfix, zfix, cfix):
     return bfix
 
 
-@numba.njit(cache=True)
 def mtrx(
     lrow1,
     lcol1,

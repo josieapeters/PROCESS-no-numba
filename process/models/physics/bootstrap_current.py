@@ -7,7 +7,6 @@ from enum import IntEnum
 from types import DynamicClassAttribute
 from typing import TYPE_CHECKING
 
-import numba as nb
 import numpy as np
 import scipy
 from scipy import integrate
@@ -296,7 +295,6 @@ class PlasmaBootstrapCurrent(Model):
         return model_map[model]
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_iter89(
         aspect: float,
         beta: float,
@@ -362,7 +360,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * (betapbs / np.sqrt(aspect)) ** 1.3
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_wilson(
         alphaj: float,
         alphap: float,
@@ -492,7 +489,6 @@ class PlasmaBootstrapCurrent(Model):
         return seps1 * betpth * (a * b).sum()
 
     @staticmethod
-    @nb.njit(cache=True)
     def _nevins_integral(
         y: float,
         nd_plasma_electrons_vol_avg: float,
@@ -706,7 +702,6 @@ class PlasmaBootstrapCurrent(Model):
         return 1.0e6 * aibs / plasma_current
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_sakai(
         beta_poloidal: float,
         q95: float,
@@ -773,7 +768,6 @@ class PlasmaBootstrapCurrent(Model):
         )
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_aries(
         beta_poloidal: float,
         ind_plasma_internal_norm: float,
@@ -828,7 +822,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * np.sqrt(inverse_aspect) * beta_poloidal
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_andrade(
         beta_poloidal: float,
         core_pressure: float,
@@ -878,7 +871,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * np.sqrt(inverse_aspect) * beta_poloidal * c_p**0.8
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_hoang(
         beta_poloidal: float,
         pressure_index: float,
@@ -993,7 +985,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * f_peak**0.25 * beta_poloidal * np.sqrt(inverse_aspect)
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_gi_I(  # noqa: N802
         beta_poloidal: float,
         pressure_index: float,
@@ -1064,7 +1055,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * np.sqrt(inverse_aspect) * beta_poloidal
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_gi_II(  # noqa: N802
         beta_poloidal: float,
         pressure_index: float,
@@ -1129,7 +1119,6 @@ class PlasmaBootstrapCurrent(Model):
         return c_bs * np.sqrt(inverse_aspect) * beta_poloidal
 
     @staticmethod
-    @nb.njit(cache=True)
     def bootstrap_fraction_sugiyama_l_mode(
         eps: float,
         beta_poloidal: float,
@@ -1605,7 +1594,6 @@ class SauterBootstrapCurrent(Model):
         return (np.sum(da * jboot, axis=0) / self.data.physics.plasma_current), jboot
 
     @staticmethod
-    @nb.njit(cache=True)
     def _coulomb_logarithm_sauter(
         radial_elements: int, tempe: np.ndarray, ne: np.ndarray
     ) -> np.ndarray:
@@ -1731,7 +1719,6 @@ class SauterBootstrapCurrent(Model):
         )
 
     @staticmethod
-    @nb.njit(cache=True)
     def _ion_collisions_sauter(
         radial_elements: np.ndarray,
         zeff: np.ndarray,
@@ -2302,7 +2289,6 @@ class SauterBootstrapCurrent(Model):
         )
 
     @staticmethod
-    @nb.njit(cache=True)
     def _beta_poloidal_sauter(
         radial_elements: np.ndarray,
         nr: int,
@@ -2361,7 +2347,6 @@ class SauterBootstrapCurrent(Model):
         )
 
     @staticmethod
-    @nb.njit(cache=True)
     def _beta_poloidal_total_sauter(
         radial_elements: np.ndarray,
         nr: int,
@@ -2439,7 +2424,6 @@ class SauterBootstrapCurrent(Model):
         )
 
     @staticmethod
-    @nb.njit(cache=True)
     def _trapped_particle_fraction_sauter(
         radial_elements: np.ndarray, triang: float, sqeps: np.ndarray, fit: int = 0
     ) -> np.ndarray:

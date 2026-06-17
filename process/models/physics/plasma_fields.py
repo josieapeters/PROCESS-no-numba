@@ -2,7 +2,6 @@
 
 import logging
 
-import numba as nb
 import numpy as np
 
 from process.core import constants
@@ -93,7 +92,6 @@ class PlasmaFields(Model):
         return b_plasma_toroidal_on_axis * (ff1 + ff2) / (2.0 * np.pi * qbar)
 
     @staticmethod
-    @nb.njit(cache=True)
     def calculate_plasma_inboard_toroidal_field(
         b_plasma_toroidal_on_axis: float,
         rmajor: float,
@@ -118,7 +116,6 @@ class PlasmaFields(Model):
         return rmajor * b_plasma_toroidal_on_axis / (rmajor - rminor)
 
     @staticmethod
-    @nb.njit(cache=True)
     def calculate_plasma_outboard_toroidal_field(
         b_plasma_toroidal_on_axis: float,
         rmajor: float,
@@ -143,7 +140,6 @@ class PlasmaFields(Model):
         return rmajor * b_plasma_toroidal_on_axis / (rmajor + rminor)
 
     @staticmethod
-    @nb.njit(cache=True)
     def calculate_toroidal_field_profile(
         b_plasma_toroidal_on_axis: float,
         rmajor: float,
@@ -177,7 +173,6 @@ class PlasmaFields(Model):
         return rmajor * b_plasma_toroidal_on_axis / rho
 
     @staticmethod
-    @nb.njit(cache=True)
     def calculate_total_magnetic_field(
         b_plasma_toroidal: float, b_plasma_poloidal: float
     ) -> float:

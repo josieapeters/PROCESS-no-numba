@@ -2,7 +2,6 @@
 
 import logging
 
-import numba
 import numpy as np
 
 from process.core import constants
@@ -1222,7 +1221,6 @@ class ResistiveTFCoil(TFCoil):
                 po.oblnkl(self.outfile)
 
     @staticmethod
-    @numba.njit(cache=True)
     def cpost(
         r_tf_inboard_in,
         r_tf_inboard_out,

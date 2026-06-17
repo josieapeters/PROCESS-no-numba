@@ -7,7 +7,6 @@ from importlib import resources
 from pathlib import Path
 
 import numpy as np
-from numba import njit
 from scipy import integrate
 
 from process.core import constants
@@ -421,7 +420,6 @@ def zav_of_te(imp_element_index, teprofile, data: DataStructure):
     )
 
 
-@njit(cache=True)
 def _zav_of_te_compiled(
     imp_element_index: int,
     teprofile: np.array,
